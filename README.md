@@ -2,7 +2,7 @@
 
 A simple Composable Guitar Chords Diagram 
 
-<img width="407" alt="image" src="https://github.com/Pliniodev/chords-diagram/assets/50078639/aa4fab51-6cde-4ba2-8757-c5a9f2174bdd">
+<img width="407" alt="image" src="https://github.com/Pliniodev/chords-diagram/assets/50078639/39da72f5-9568-4a85-925e-1800fb67f1a7"
 
 quick start
 
