@@ -71,4 +71,4 @@ publishing {
             }
         }
     }
-}//com.pliniodev:chords-diagram:1.0.0
+}
