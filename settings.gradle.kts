@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ChordsDiagram"
+rootProject.name = "chords-diagram"
 include(":app")
-include(":chordsDiagram")
+include(":chords-diagram")

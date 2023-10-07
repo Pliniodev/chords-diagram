@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
+    `maven-publish`
 }
 
 android {
@@ -56,3 +57,18 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 }
+
+// Maven local publish script
+publishing {
+    publications {
+        create<MavenPublication>("ReleaseAar") {
+            groupId = "com.pliniodev"
+            artifactId = "chords-diagram"
+            version = "1.0.0"
+
+            afterEvaluate {
+                artifact(tasks.getByName("bundleReleaseAar"))
+            }
+        }
+    }
+}//com.pliniodev:chords-diagram:1.0.0
