@@ -35,8 +35,7 @@ dependencies {
 
 ```
 ChordsDiagram(
-    modifier = Modifier.fillMaxWidth(),
-        options = GuitarViewOptions(
+    options = GuitarViewOptions(
         guitarViewSize = GuitarViewSize.Large,
         chordPositions = listOf(
             ChordPosition(
