@@ -16,7 +16,14 @@ data class ChordPosition(
     val guitarFret: GuitarFret,
     val fingerPosition: FingerPosition? = null,
     val barChord: IntRange? = null,
-)
+) {
+    init {
+        barChord?.let {
+            require(it.first in 1..6) { "Bar chord range must be between 1 and 6" }
+            require(it.last in 1..6) { "Bar chord range must be between 1 and 6" }
+        }
+    }
+}
 
 data class FingerPosition(
     val guitarString: GuitarString,

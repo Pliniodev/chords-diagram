@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
-private const val QUANTITY_OF_STRINGS = 6f
+private const val QUANTITY_OF_STRINGS = 6
 private const val QUANTITY_OF_STRINGS_FACTOR = QUANTITY_OF_STRINGS + 1f
 private const val QUANTITY_OF_FRETS_FACTOR = 5f
 private const val LETTER_X_CENTRALIZER = 12f
@@ -41,6 +41,10 @@ fun ChordsDiagram(
     options: ChordDiagramOptions,
     modifier: Modifier = Modifier,
 ) {
+    require(options.chordPositions.size in 0..QUANTITY_OF_STRINGS) {
+        "Chord positions size must be between 0 and 6"
+    }
+
     val textMeasurer = rememberTextMeasurer()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -569,21 +573,22 @@ private fun DrawScope.drawMutedString(
 
 @Preview(showBackground = true)
 @Composable
-fun GuitarViewPreview() {
+private fun GuitarViewPreview() {
     Column {
         ChordsDiagram(
             options = ChordDiagramOptions(
                 chordDiagramSize = ChordDiagramSize.Medium,
                 variant = ChordDiagramVariant.Full,
                 openStrings = listOf(
-                    OpenGuitarString.Fifth,
                     OpenGuitarString.First,
+                    OpenGuitarString.Second,
                     OpenGuitarString.Third,
+                    OpenGuitarString.Fifth,
                 ),
                 chordPositions = listOf(
                     ChordPosition(
                         guitarFret = GuitarFret.First,
-                        barChord = 2..6,
+                        barChord = 1..6,
                     ),
                     ChordPosition(
                         guitarFret = GuitarFret.Second,
