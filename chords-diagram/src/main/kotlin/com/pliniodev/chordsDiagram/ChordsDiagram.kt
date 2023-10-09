@@ -47,15 +47,15 @@ fun ChordsDiagram(
         verticalArrangement = Arrangement.Center,
         modifier = modifier,
     ) {
-        if (options.showStringNotes) {
-            GuitarStringNotes(
-                diagramWidth = options.chordDiagramSize.diagramSize.width,
-                stringNoteHeight = options.chordDiagramSize.stringNoteSize.height,
-                textNoteSize = options.chordDiagramSize.stringNoteSize.textNoteSize,
-                textMeasurer = textMeasurer,
-            )
-        }
-        Spacer(modifier = Modifier.height(options.chordDiagramSize.diagramSize.spacer))
+        DiagramHeader(
+            diagramWidth = options.chordDiagramSize.diagramSize.width,
+            diagramSpacer = options.chordDiagramSize.diagramSize.spacer,
+            stringStateSize = options.chordDiagramSize.stringStateSize,
+            stringNoteSize = options.chordDiagramSize.stringNoteSize,
+            openStrings = options.openStrings,
+            variant = options.variant,
+            textMeasurer = textMeasurer
+        )
         Guitar(
             diagramWidth = options.chordDiagramSize.diagramSize.width,
             diagramHeight = options.chordDiagramSize.diagramSize.height,
@@ -68,15 +68,61 @@ fun ChordsDiagram(
             barChordStroke = options.chordDiagramSize.fingeringSize.barChordStroke,
             textMeasurer = textMeasurer,
         )
-        Spacer(modifier = Modifier.height(options.chordDiagramSize.diagramSize.spacer))
-        if (options.showStringOpenOrClose) {
-            GuitarStringState(
-                diagramWidth = options.chordDiagramSize.diagramSize.width,
-                stringStateSize = options.chordDiagramSize.stringStateSize,
-                openStrings = options.openStrings
-            )
-        }
+        DiagramFooter(options)
     }
+}
+
+@Composable
+private fun DiagramHeader(
+    diagramWidth: Dp,
+    diagramSpacer: Dp,
+    stringStateSize: StringStateSize,
+    stringNoteSize: StringNotesSize,
+    openStrings: List<OpenGuitarString>,
+    variant: ChordDiagramVariant,
+    textMeasurer: TextMeasurer,
+) {
+    val isFullVariant = variant is ChordDiagramVariant.Full
+    val isJustStringStateInverted =
+        variant is ChordDiagramVariant.JustStringState && variant.inverted
+
+    return when {
+        isFullVariant -> {
+            GuitarStringNotes(
+                diagramWidth = diagramWidth,
+                stringNoteHeight = stringNoteSize.height,
+                textNoteSize = stringNoteSize.textNoteSize,
+                textMeasurer = textMeasurer,
+            )
+            Spacer(modifier = Modifier.height(diagramSpacer))
+        }
+
+        isJustStringStateInverted -> {
+            GuitarStringState(
+                diagramWidth = diagramWidth,
+                stringStateSize = stringStateSize,
+                openStrings = openStrings
+            )
+            Spacer(modifier = Modifier.height(diagramSpacer))
+        }
+
+        else -> Unit
+    }
+}
+
+@Composable
+private fun DiagramFooter(options: ChordDiagramOptions) {
+    val shouldShowStringState = options.variant is ChordDiagramVariant.Full ||
+            (options.variant is ChordDiagramVariant.JustStringState && options.variant.inverted.not())
+
+    return if (shouldShowStringState) {
+        Spacer(modifier = Modifier.height(options.chordDiagramSize.diagramSize.spacer))
+        GuitarStringState(
+            diagramWidth = options.chordDiagramSize.diagramSize.width,
+            stringStateSize = options.chordDiagramSize.stringStateSize,
+            openStrings = options.openStrings
+        )
+    } else Unit
 }
 
 @Composable
@@ -527,7 +573,8 @@ fun GuitarViewPreview() {
     Column {
         ChordsDiagram(
             options = ChordDiagramOptions(
-                chordDiagramSize = ChordDiagramSize.Small,
+                chordDiagramSize = ChordDiagramSize.Medium,
+                variant = ChordDiagramVariant.Full,
                 openStrings = listOf(
                     OpenGuitarString.Fifth,
                     OpenGuitarString.First,
@@ -541,7 +588,7 @@ fun GuitarViewPreview() {
                     ChordPosition(
                         guitarFret = GuitarFret.Second,
                         fingerPosition = FingerPosition(
-                            guitarString = GuitarString.G,
+                            guitarString = GuitarString.B,
                             fingering = Fingering.Second,
                         )
                     ),
@@ -549,6 +596,13 @@ fun GuitarViewPreview() {
                         guitarFret = GuitarFret.Third,
                         fingerPosition = FingerPosition(
                             guitarString = GuitarString.D,
+                            fingering = Fingering.Fourth,
+                        )
+                    ),
+                    ChordPosition(
+                        guitarFret = GuitarFret.Third,
+                        fingerPosition = FingerPosition(
+                            guitarString = GuitarString.A,
                             fingering = Fingering.Third,
                         )
                     ),

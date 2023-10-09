@@ -9,8 +9,7 @@ data class ChordDiagramOptions(
     val chordDiagramSize: ChordDiagramSize = ChordDiagramSize.Medium,
     val chordPositions: List<ChordPosition> = emptyList(),
     val openStrings: List<OpenGuitarString> = emptyList(),
-    val showStringNotes: Boolean = true,
-    val showStringOpenOrClose: Boolean = true,
+    val variant: ChordDiagramVariant = ChordDiagramVariant.Full,
 )
 
 data class ChordPosition(
@@ -150,4 +149,10 @@ enum class Fingering(val number: String) {
     Second(number = "2"),
     Third(number = "3"),
     Fourth(number = "4"),
+}
+
+sealed class ChordDiagramVariant {
+    object Full : ChordDiagramVariant()
+    data class JustStringState(val inverted: Boolean) : ChordDiagramVariant()
+    object Simple : ChordDiagramVariant()
 }
