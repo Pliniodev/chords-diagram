@@ -35,34 +35,47 @@ dependencies {
 
 ```
 ChordsDiagram(
-    options = GuitarViewOptions(
-        guitarViewSize = GuitarViewSize.Large,
+    modifier = Modifier.fillMaxWidth(),
+    options = ChordDiagramOptions(
+        chordDiagramSize = ChordDiagramSize.Medium,
+        variant = ChordDiagramVariant.Full,
+        openStrings = listOf(
+            OpenGuitarString.First,
+            OpenGuitarString.Second,
+            OpenGuitarString.Third,
+            OpenGuitarString.Fifth,
+        ),
         chordPositions = listOf(
             ChordPosition(
                 guitarFret = GuitarFret.First,
-                guitarString = GuitarString.E2,
-                fingering = Fingering.First,
+                barChord = 1..6,
             ),
             ChordPosition(
                 guitarFret = GuitarFret.Second,
-                guitarString = GuitarString.G,
-                fingering = Fingering.Second,
+                fingerPosition = FingerPosition(
+                    guitarString = GuitarString.B,
+                    fingering = Fingering.Second,
+                )
             ),
             ChordPosition(
                 guitarFret = GuitarFret.Third,
-                guitarString = GuitarString.E4,
-                fingering = Fingering.Third,
+                fingerPosition = FingerPosition(
+                    guitarString = GuitarString.D,
+                    fingering = Fingering.Fourth,
+                )
             ),
-        ),
-        openStrings = listOf(
-            OpenGuitarString.Fifth,
-            OpenGuitarString.First,
-            OpenGuitarString.Third,
-        ),
+            ChordPosition(
+                guitarFret = GuitarFret.Third,
+                fingerPosition = FingerPosition(
+                    guitarString = GuitarString.A,
+                    fingering = Fingering.Third,
+                )
+            ),
+        )
     ),
 )
 ```
 
 Result
 
-<img width="300" alt="image" src="https://github.com/Pliniodev/chords-diagram/assets/50078639/39da72f5-9568-4a85-925e-1800fb67f1a7">
+<img width="300" alt="image" src="https://github.com/Pliniodev/chords-diagram/assets/50078639/78e714ab-7488-40a4-a612-7989521ca063">
