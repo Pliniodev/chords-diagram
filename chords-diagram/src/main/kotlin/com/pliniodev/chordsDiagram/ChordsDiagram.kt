@@ -29,19 +29,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import com.pliniodev.guitarview.ChordPosition
-import com.pliniodev.guitarview.Fingering
-import com.pliniodev.guitarview.GuitarFret
-import com.pliniodev.guitarview.GuitarString
-import com.pliniodev.guitarview.GuitarViewOptions
-import com.pliniodev.guitarview.GuitarViewSize
-import com.pliniodev.guitarview.OpenGuitarString
-import com.pliniodev.guitarview.StringStateSize
 
-private const val quantityOfStringsFactor = 7f
-private const val quantityOfFretsFactor = 5f
-
-private const val LetterXCentralize = 12f
+private const val QUANTITY_OF_STRINGS = 6f
+private const val QUANTITY_OF_STRINGS_FACTOR = QUANTITY_OF_STRINGS + 1f
+private const val QUANTITY_OF_FRETS_FACTOR = 5f
+private const val LETTER_X_CENTRALIZER = 12f
+private const val LAST_STRING = 6
 
 @Composable
 fun ChordsDiagram(
@@ -72,6 +65,7 @@ fun ChordsDiagram(
             fretStroke = options.guitarViewSize.diagramSize.fretStroke,
             nutStroke = options.guitarViewSize.diagramSize.nutStroke,
             stringStroke = options.guitarViewSize.diagramSize.stringStroke,
+            barChordStroke = options.guitarViewSize.fingeringSize.barChordStroke,
             textMeasurer = textMeasurer,
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -94,6 +88,7 @@ private fun Guitar(
     fretStroke: Dp,
     nutStroke: Dp,
     stringStroke: Dp,
+    barChordStroke: Dp,
     chordPositions: List<ChordPosition>,
     textMeasurer: TextMeasurer
 ) {
@@ -124,6 +119,8 @@ private fun Guitar(
         drawChordAndFingering(
             diagramWidth = diagramWidth,
             diagramHeight = diagramHeight,
+            barChordStroke = barChordStroke,
+            fretBoardCentralizer = (diagramHeight.toPx() / (QUANTITY_OF_FRETS_FACTOR * 2)),
             fingeringRadius = fingeringRadius,
             chordPositions = chordPositions,
             textMeasurer = textMeasurer,
@@ -211,7 +208,7 @@ private fun DrawScope.drawStringState(
                 drawMutedSize = mutedSize,
                 stringMutedStroke = stateStroke,
                 center = Offset(
-                    x = diagramWidth.toPx() * ((position) / quantityOfStringsFactor),
+                    x = diagramWidth.toPx() * ((position) / QUANTITY_OF_STRINGS_FACTOR),
                     y = center.y,
                 )
             )
@@ -254,24 +251,65 @@ private fun DrawScope.drawChordAndFingering(
     diagramWidth: Dp,
     diagramHeight: Dp,
     fingeringRadius: Dp,
+    barChordStroke: Dp,
     chordPositions: List<ChordPosition>,
     textMeasurer: TextMeasurer,
     textStyle: TextStyle,
+    fretBoardCentralizer: Float,
 ) {
     chordPositions.forEach { chordPosition ->
-        drawFingerCircle(
-            fingering = chordPosition.fingering,
-            center = Offset(
-                x = diagramWidth.toPx() * (chordPosition.guitarString.position / quantityOfStringsFactor),
-                y = (diagramHeight.toPx() * (chordPosition.guitarFret.position / quantityOfFretsFactor))
-                        - (diagramHeight.toPx() / (quantityOfFretsFactor * 2)),
-            ),
-            radius = fingeringRadius,
-            textStyle = textStyle,
-            textMeasurer = textMeasurer,
-            textLayoutResult = textMeasurer.measure(chordPosition.fingering.number, textStyle)
-        )
+        chordPosition.fingerPosition?.let { position ->
+            drawFingerCircle(
+                fingering = position.fingering,
+                center = Offset(
+                    x = diagramWidth.toPx() * (position.guitarString.position / QUANTITY_OF_STRINGS_FACTOR),
+                    y = (diagramHeight.toPx() * (chordPosition.guitarFret.position / QUANTITY_OF_FRETS_FACTOR))
+                            - fretBoardCentralizer,
+                ),
+                radius = fingeringRadius,
+                textStyle = textStyle,
+                textMeasurer = textMeasurer,
+                textLayoutResult = textMeasurer.measure(position.fingering.number, textStyle)
+            )
+        }
+        chordPosition.barChord?.let { barChord ->
+            drawBarChord(
+                diagramWidth = diagramWidth,
+                diagramHeight = diagramHeight,
+                fretBoardCentralizer = fretBoardCentralizer,
+                strokeWidth = barChordStroke,
+                barChordStringStart = barChord.first,
+                barChordStringEnd = barChord.last,
+                barChordFretNumber = chordPosition.guitarFret.position,
+            )
+        }
     }
+}
+
+private fun DrawScope.drawBarChord(
+    diagramWidth: Dp,
+    diagramHeight: Dp,
+    strokeWidth: Dp,
+    barChordStringStart: Int,
+    barChordFretNumber: Int,
+    fretBoardCentralizer: Float,
+    barChordStringEnd: Int = LAST_STRING,
+) {
+    drawLine(
+        color = Color.Black,
+        start = Offset(
+            x = diagramWidth.toPx() * (barChordStringStart / QUANTITY_OF_STRINGS_FACTOR),
+            y = diagramHeight.toPx() * (barChordFretNumber / QUANTITY_OF_FRETS_FACTOR)
+                    - fretBoardCentralizer
+        ),
+        end = Offset(
+            x = diagramWidth.toPx() * (barChordStringEnd / QUANTITY_OF_STRINGS_FACTOR),
+            y = diagramHeight.toPx() * (barChordFretNumber / QUANTITY_OF_FRETS_FACTOR)
+                    - fretBoardCentralizer
+        ),
+        strokeWidth = strokeWidth.toPx(),
+        cap = StrokeCap.Round
+    )
 }
 
 private fun DrawScope.drawGuitarString(
@@ -283,11 +321,11 @@ private fun DrawScope.drawGuitarString(
     drawLine(
         color = Color.Black,
         start = Offset(
-            x = diagramWidth.toPx() * (xLinePosition / quantityOfStringsFactor),
+            x = diagramWidth.toPx() * (xLinePosition / QUANTITY_OF_STRINGS_FACTOR),
             y = 0f
         ),
         end = Offset(
-            x = diagramWidth.toPx() * (xLinePosition / quantityOfStringsFactor),
+            x = diagramWidth.toPx() * (xLinePosition / QUANTITY_OF_STRINGS_FACTOR),
             y = diagramHeight.toPx()
         ),
         strokeWidth = strokeWidth.toPx(),
@@ -304,12 +342,12 @@ private fun DrawScope.drawGuitarFret(
     drawLine(
         color = Color.Gray,
         start = Offset(
-            x = diagramWidth.toPx() / quantityOfStringsFactor,
-            y = diagramHeight.toPx() * (yLinePosition / quantityOfFretsFactor)
+            x = diagramWidth.toPx() / QUANTITY_OF_STRINGS_FACTOR,
+            y = diagramHeight.toPx() * (yLinePosition / QUANTITY_OF_FRETS_FACTOR)
         ),
         end = Offset(
-            x = diagramWidth.toPx() - diagramWidth.toPx() / quantityOfStringsFactor,
-            y = diagramHeight.toPx() * (yLinePosition / quantityOfFretsFactor)
+            x = diagramWidth.toPx() - diagramWidth.toPx() / QUANTITY_OF_STRINGS_FACTOR,
+            y = diagramHeight.toPx() * (yLinePosition / QUANTITY_OF_FRETS_FACTOR)
         ),
         strokeWidth = strokeWidth.toPx(),
         cap = StrokeCap.Round
@@ -319,11 +357,11 @@ private fun DrawScope.drawGuitarFret(
         color = Color.DarkGray,
         start = Offset(
             x = diagramWidth.toPx() / 7,
-            y = diagramHeight.toPx() * (yLinePosition / quantityOfFretsFactor) - 3f
+            y = diagramHeight.toPx() * (yLinePosition / QUANTITY_OF_FRETS_FACTOR) - 3f
         ),
         end = Offset(
-            x = diagramWidth.toPx() - diagramWidth.toPx() / quantityOfStringsFactor,
-            y = diagramHeight.toPx() * (yLinePosition / quantityOfFretsFactor) - 3f
+            x = diagramWidth.toPx() - diagramWidth.toPx() / QUANTITY_OF_STRINGS_FACTOR,
+            y = diagramHeight.toPx() * (yLinePosition / QUANTITY_OF_FRETS_FACTOR) - 3f
         ),
         strokeWidth = strokeWidth.toPx(),
         cap = StrokeCap.Round
@@ -341,12 +379,12 @@ private fun DrawScope.drawGuitarNut(
     drawLine(
         color = Color.LightGray,
         start = Offset(
-            x = (diagramWidth.toPx() / quantityOfStringsFactor) - 5f,
-            y = diagramHeight.toPx() * (0 / quantityOfFretsFactor) + 3f
+            x = (diagramWidth.toPx() / QUANTITY_OF_STRINGS_FACTOR) - 5f,
+            y = diagramHeight.toPx() * (0 / QUANTITY_OF_FRETS_FACTOR) + 3f
         ),
         end = Offset(
-            x = diagramWidth.toPx() - (diagramWidth.toPx() / quantityOfStringsFactor) + 5f,
-            y = diagramHeight.toPx() * (0 / quantityOfFretsFactor) + 3f
+            x = diagramWidth.toPx() - (diagramWidth.toPx() / QUANTITY_OF_STRINGS_FACTOR) + 5f,
+            y = diagramHeight.toPx() * (0 / QUANTITY_OF_FRETS_FACTOR) + 3f
         ),
         strokeWidth = strokeWidth.toPx(),
         cap = StrokeCap.Butt
@@ -354,12 +392,12 @@ private fun DrawScope.drawGuitarNut(
     drawLine(
         brush = brush,
         start = Offset(
-            x = (diagramWidth.toPx() / quantityOfStringsFactor) - 5f,
-            y = diagramHeight.toPx() * (0 / quantityOfFretsFactor)
+            x = (diagramWidth.toPx() / QUANTITY_OF_STRINGS_FACTOR) - 5f,
+            y = diagramHeight.toPx() * (0 / QUANTITY_OF_FRETS_FACTOR)
         ),
         end = Offset(
-            x = diagramWidth.toPx() - (diagramWidth.toPx() / quantityOfStringsFactor) + 5f,
-            y = diagramHeight.toPx() * (0 / quantityOfFretsFactor)
+            x = diagramWidth.toPx() - (diagramWidth.toPx() / QUANTITY_OF_STRINGS_FACTOR) + 5f,
+            y = diagramHeight.toPx() * (0 / QUANTITY_OF_FRETS_FACTOR)
         ),
         strokeWidth = strokeWidth.toPx(),
         cap = StrokeCap.Round
@@ -372,7 +410,7 @@ private fun DrawScope.drawGuitarBackground(
 ) {
     val brush = Brush.horizontalGradient(listOf(Color.White, Color.LightGray))
     val rectWidth =
-        diagramWidth.toPx() - ((diagramWidth.toPx() / quantityOfStringsFactor) * 2)
+        diagramWidth.toPx() - ((diagramWidth.toPx() / QUANTITY_OF_STRINGS_FACTOR) * 2)
     val rectHeight = diagramHeight.toPx()
     drawRect(
         brush = brush,
@@ -381,7 +419,7 @@ private fun DrawScope.drawGuitarBackground(
             height = rectHeight
         ),
         topLeft = Offset(
-            x = (diagramWidth.toPx() / quantityOfStringsFactor),
+            x = (diagramWidth.toPx() / QUANTITY_OF_STRINGS_FACTOR),
             y = 0f
         ),
     )
@@ -426,7 +464,7 @@ private fun DrawScope.drawLineNote(
         style = TextStyle(fontSize = stringNoteSize),
         textMeasurer = textMeasurer,
         topLeft = Offset(
-            x = diagramWidth.toPx() * (position / quantityOfStringsFactor) - LetterXCentralize,
+            x = diagramWidth.toPx() * (position / QUANTITY_OF_STRINGS_FACTOR) - LETTER_X_CENTRALIZER,
             y = 0f
         )
     )
@@ -443,7 +481,7 @@ private fun DrawScope.drawOpenString(
         radius = openRadius.toPx(),
         style = Stroke(width = stroke.toPx(), cap = StrokeCap.Round),
         center = Offset(
-            x = diagramWidth.toPx() * (position / quantityOfStringsFactor),
+            x = diagramWidth.toPx() * (position / QUANTITY_OF_STRINGS_FACTOR),
             y = center.y
         )
     )
@@ -496,9 +534,24 @@ fun GuitarViewPreview() {
                     OpenGuitarString.Third,
                 ),
                 chordPositions = listOf(
-                    ChordPosition(GuitarFret.First, GuitarString.E2, Fingering.First),
-                    ChordPosition(GuitarFret.Second, GuitarString.G, Fingering.Second),
-                    ChordPosition(GuitarFret.Fifth, GuitarString.E4, Fingering.Third),
+                    ChordPosition(
+                        guitarFret = GuitarFret.First,
+                        barChord = 2..6,
+                    ),
+                    ChordPosition(
+                        guitarFret = GuitarFret.Second,
+                        fingerPosition = FingerPosition(
+                            guitarString = GuitarString.G,
+                            fingering = Fingering.Second,
+                        )
+                    ),
+                    ChordPosition(
+                        guitarFret = GuitarFret.Third,
+                        fingerPosition = FingerPosition(
+                            guitarString = GuitarString.D,
+                            fingering = Fingering.Third,
+                        )
+                    ),
                 )
             ),
         )

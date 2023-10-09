@@ -1,4 +1,4 @@
-package com.pliniodev.guitarview
+package com.pliniodev.chordsDiagram
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -15,6 +15,11 @@ data class GuitarViewOptions(
 
 data class ChordPosition(
     val guitarFret: GuitarFret,
+    val fingerPosition: FingerPosition? = null,
+    val barChord: IntRange? = null,
+)
+
+data class FingerPosition(
     val guitarString: GuitarString,
     val fingering: Fingering,
 )
@@ -44,7 +49,7 @@ enum class DiagramSize(
     val height: Dp,
     val fretStroke: Dp,
     val nutStroke: Dp,
-    val stringStroke: Dp
+    val stringStroke: Dp,
 ) {
     Medium(
         width = 300.dp,
@@ -66,9 +71,9 @@ enum class StringStateSize(val height: Dp, val stroke: Dp, val mutedSize: Dp, va
     Large(height = 30.dp, stroke = 3.dp, mutedSize = 20.dp, openRadius = 16.dp),
 }
 
-enum class FingeringSize(val textSize: TextUnit, val fingeringRadius: Dp) {
-    Medium(textSize = 24.sp, fingeringRadius = 16.dp),
-    Large(textSize = 40.sp, fingeringRadius = 24.dp),
+enum class FingeringSize(val textSize: TextUnit, val fingeringRadius: Dp, val barChordStroke: Dp) {
+    Medium(textSize = 24.sp, fingeringRadius = 16.dp, barChordStroke = 24.dp),
+    Large(textSize = 40.sp, fingeringRadius = 24.dp, barChordStroke = 36.dp),
 }
 
 enum class OpenGuitarString(val position: Int) {
