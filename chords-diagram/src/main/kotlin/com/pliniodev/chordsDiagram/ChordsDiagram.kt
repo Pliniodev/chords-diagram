@@ -38,7 +38,7 @@ private const val LAST_STRING = 6
 
 @Composable
 fun ChordsDiagram(
-    options: GuitarViewOptions,
+    options: ChordDiagramOptions,
     modifier: Modifier = Modifier,
 ) {
     val textMeasurer = rememberTextMeasurer()
@@ -49,30 +49,30 @@ fun ChordsDiagram(
     ) {
         if (options.showStringNotes) {
             GuitarStringNotes(
-                diagramWidth = options.guitarViewSize.diagramSize.width,
-                stringNoteHeight = options.guitarViewSize.stringNoteSize.height,
-                textNoteSize = options.guitarViewSize.stringNoteSize.textNoteSize,
+                diagramWidth = options.chordDiagramSize.diagramSize.width,
+                stringNoteHeight = options.chordDiagramSize.stringNoteSize.height,
+                textNoteSize = options.chordDiagramSize.stringNoteSize.textNoteSize,
                 textMeasurer = textMeasurer,
             )
         }
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(options.chordDiagramSize.diagramSize.spacer))
         Guitar(
-            diagramWidth = options.guitarViewSize.diagramSize.width,
-            diagramHeight = options.guitarViewSize.diagramSize.height,
-            fingeringTextSize = options.guitarViewSize.fingeringSize.textSize,
-            fingeringRadius = options.guitarViewSize.fingeringSize.fingeringRadius,
+            diagramWidth = options.chordDiagramSize.diagramSize.width,
+            diagramHeight = options.chordDiagramSize.diagramSize.height,
+            fingeringTextSize = options.chordDiagramSize.fingeringSize.textSize,
+            fingeringRadius = options.chordDiagramSize.fingeringSize.fingeringRadius,
             chordPositions = options.chordPositions,
-            fretStroke = options.guitarViewSize.diagramSize.fretStroke,
-            nutStroke = options.guitarViewSize.diagramSize.nutStroke,
-            stringStroke = options.guitarViewSize.diagramSize.stringStroke,
-            barChordStroke = options.guitarViewSize.fingeringSize.barChordStroke,
+            fretStroke = options.chordDiagramSize.diagramSize.fretStroke,
+            nutStroke = options.chordDiagramSize.diagramSize.nutStroke,
+            stringStroke = options.chordDiagramSize.diagramSize.stringStroke,
+            barChordStroke = options.chordDiagramSize.fingeringSize.barChordStroke,
             textMeasurer = textMeasurer,
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(options.chordDiagramSize.diagramSize.spacer))
         if (options.showStringOpenOrClose) {
             GuitarStringState(
-                diagramWidth = options.guitarViewSize.diagramSize.width,
-                stringStateSize = options.guitarViewSize.stringStateSize,
+                diagramWidth = options.chordDiagramSize.diagramSize.width,
+                stringStateSize = options.chordDiagramSize.stringStateSize,
                 openStrings = options.openStrings
             )
         }
@@ -526,8 +526,8 @@ private fun DrawScope.drawMutedString(
 fun GuitarViewPreview() {
     Column {
         ChordsDiagram(
-            options = GuitarViewOptions(
-                guitarViewSize = GuitarViewSize.Large,
+            options = ChordDiagramOptions(
+                chordDiagramSize = ChordDiagramSize.Small,
                 openStrings = listOf(
                     OpenGuitarString.Fifth,
                     OpenGuitarString.First,

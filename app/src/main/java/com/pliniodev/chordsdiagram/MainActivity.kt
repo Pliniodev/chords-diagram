@@ -15,8 +15,8 @@ import com.pliniodev.chordsDiagram.GuitarFret
 import com.pliniodev.chordsDiagram.GuitarString
 import com.pliniodev.chordsDiagram.ChordsDiagram
 import com.pliniodev.chordsDiagram.FingerPosition
-import com.pliniodev.chordsDiagram.GuitarViewOptions
-import com.pliniodev.chordsDiagram.GuitarViewSize
+import com.pliniodev.chordsDiagram.ChordDiagramOptions
+import com.pliniodev.chordsDiagram.ChordDiagramSize
 import com.pliniodev.chordsDiagram.OpenGuitarString
 
 class MainActivity : ComponentActivity() {
@@ -30,8 +30,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     ChordsDiagram(
                         modifier = Modifier.fillMaxWidth(),
-                        options = GuitarViewOptions(
-                            guitarViewSize = GuitarViewSize.Large,
+                        options = ChordDiagramOptions(
+                            chordDiagramSize = ChordDiagramSize.XSmall,
                             openStrings = listOf(
                                 OpenGuitarString.Fifth,
                                 OpenGuitarString.First,
