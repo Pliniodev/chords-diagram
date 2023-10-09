@@ -27,7 +27,7 @@ maven { url 'https://jitpack.io' }
 ```
 ```
 dependencies {
-    implementation 'com.github.Pliniodev:chords-diagram:1.0.1'
+    implementation 'com.github.Pliniodev:chords-diagram:version'
 }
 ```
 
