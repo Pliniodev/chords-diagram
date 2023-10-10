@@ -1,0 +1,25 @@
+name: ktlint Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup ambient
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+      - name: Run ktlintCheck
+        run: |
+          ./gradlew :app:ktlintCheck 
+          ./gradlew :chords-diagram:ktlintCheck        
