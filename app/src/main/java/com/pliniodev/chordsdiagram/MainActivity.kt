@@ -8,16 +8,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.pliniodev.chordsdiagram.ui.theme.ChordsDiagramTheme
+import com.pliniodev.chordsDiagram.ChordDiagramOptions
+import com.pliniodev.chordsDiagram.ChordDiagramSize
 import com.pliniodev.chordsDiagram.ChordPosition
+import com.pliniodev.chordsDiagram.ChordsDiagram
+import com.pliniodev.chordsDiagram.FingerPosition
 import com.pliniodev.chordsDiagram.Fingering
 import com.pliniodev.chordsDiagram.GuitarFret
 import com.pliniodev.chordsDiagram.GuitarString
-import com.pliniodev.chordsDiagram.ChordsDiagram
-import com.pliniodev.chordsDiagram.FingerPosition
-import com.pliniodev.chordsDiagram.ChordDiagramOptions
-import com.pliniodev.chordsDiagram.ChordDiagramSize
 import com.pliniodev.chordsDiagram.OpenGuitarString
+import com.pliniodev.chordsdiagram.ui.theme.ChordsDiagramTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
             ChordsDiagramTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
                 ) {
                     ChordsDiagram(
                         modifier = Modifier.fillMaxWidth(),
@@ -47,16 +47,16 @@ class MainActivity : ComponentActivity() {
                                     fingerPosition = FingerPosition(
                                         guitarString = GuitarString.G,
                                         fingering = Fingering.Second,
-                                    )
+                                    ),
                                 ),
                                 ChordPosition(
                                     guitarFret = GuitarFret.Third,
                                     fingerPosition = FingerPosition(
                                         guitarString = GuitarString.D,
                                         fingering = Fingering.Third,
-                                    )
+                                    ),
                                 ),
-                            )
+                            ),
                         ),
                     )
                 }
