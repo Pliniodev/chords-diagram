@@ -21,6 +21,4 @@ jobs:
 
       - name: Run ktlintCheck
         run: |
-          branch_name="${GITHUB_REF#refs/heads/}"
-          git checkout "$branch_name"
           ./gradlew ktlintCheck
