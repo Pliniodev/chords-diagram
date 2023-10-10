@@ -21,11 +21,5 @@ jobs:
 
       - name: Run ktlintCheck
         run: |
-          modules=(":app" ":chords-diagram") 
-            for module in "${modules[@]}"; do
-              echo "Running action in $module"
-              cd $module
-              ./gradlew ktlintCheck 
-              cd ..
-            done
-                      
+          ./gradlew :app:ktlintCheck 
+          ./gradlew :chords-diagram:ktlintCheck        
