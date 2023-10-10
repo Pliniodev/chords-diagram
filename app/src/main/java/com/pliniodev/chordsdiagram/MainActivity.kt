@@ -49,13 +49,13 @@ class MainActivity : ComponentActivity() {
                                         fingering = Fingering.Second,
                                     ),
                                 ),
-                                ChordPosition(
+                                ChordPosition (
                                     guitarFret = GuitarFret.Third,
                                     fingerPosition = FingerPosition(
                                         guitarString = GuitarString.D,
                                         fingering = Fingering.Third,
                                     ),
-                                ),
+                                )
                             ),
                         ),
                     )
