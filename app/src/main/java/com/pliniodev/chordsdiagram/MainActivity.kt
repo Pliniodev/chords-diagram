@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
             ChordsDiagramTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
                 ) {
                     ChordsDiagram(
                         modifier = Modifier.fillMaxWidth(),
@@ -47,17 +47,17 @@ class MainActivity : ComponentActivity() {
                                     fingerPosition = FingerPosition(
                                         guitarString = GuitarString.G,
                                         fingering = Fingering.Second,
-                                    )
+                                    ),
                                 ),
                                 ChordPosition(
                                     guitarFret = GuitarFret.Third,
                                     fingerPosition = FingerPosition(
                                         guitarString = GuitarString.D,
                                         fingering = Fingering.Third,
-                                    )
-                                )
-                            )
-                        )
+                                    ),
+                                ),
+                            ),
+                        ),
                     )
                 }
             }
